@@ -1,5 +1,13 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateServerDto } from './create-server.dto';
+import { IsOptional, IsString, } from "class-validator";
 
-//PartialType convierte todos los campos en opcionales para poder actualziar parcial con PATCH
-export class UpdateServerDto extends PartialType(CreateServerDto) {}
+export class UpdateServerDto {
+    //Nuevo nombre del servidor
+    @IsString({ message: 'El nombre debe ser un texto' })
+    @IsOptional()
+    name?: string;
+
+    //Nueva descripción del servidor
+    @IsString({ message: 'La descripción debe ser un texto' })
+    @IsOptional()
+    description?: string;
+}

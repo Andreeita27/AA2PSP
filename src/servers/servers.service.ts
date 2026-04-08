@@ -7,15 +7,16 @@ import { UpdateServerDto } from './dto/update-server.dto';
 export class ServersService {
     constructor(private readonly prisma: PrismaService) {}
     //Crear un nuevo servidor (guild)
-    async create(createServerDto: CreateServerDto) {
+    //El ownerId no llega desde el body, sino desde el usuario autenticado
+    async create(createServerDto: CreateServerDto, ownerId: number) {
         //Comprobamos que el usuario exista antes de crear el servidor
         const owner = await this.prisma.user.findUnique({
-            where: { id: createServerDto.ownerId },
+            where: { id: ownerId },
         });
 
         if (!owner) {
             throw new NotFoundException(
-                `No se encontró un usuario con id ${createServerDto.ownerId}`,
+                `No se encontró un usuario con id ${ownerId}`,
             );
         }
 
@@ -23,7 +24,7 @@ export class ServersService {
             data: {
                 name: createServerDto.name,
                 description: createServerDto.description,
-                ownerId: createServerDto.ownerId,
+                ownerId,
             },
             include: {
                 owner:{
@@ -83,19 +84,6 @@ export class ServersService {
     //Actualizar un servidor por su ID
     async update(id: number, updateServerDto: UpdateServerDto) {
         await this.findOne(id); // Verificar que el servidor exista antes de actualizar
-
-        //Si llega el ownerId en el body, comprobamos que exista el usuario
-        if (updateServerDto.ownerId) {
-            const owner = await this.prisma.user.findUnique({
-                where: { id: updateServerDto.ownerId },
-            });
-
-            if (!owner) {
-                throw new NotFoundException(
-                    `No se encontró un usuario con id ${updateServerDto.ownerId}`,
-                );
-            }
-        }
 
         return this.prisma.server.update({
             where: { id },

@@ -10,9 +10,4 @@ export class CreateServerDto {
     @IsString({ message: 'La descripción debe ser un texto' })
     @IsOptional()
     description?: string;
-
-    //ID del usuario propiertario del servidor
-    @IsInt({ message: 'El ID del propietario debe ser un número entero' })
-    @IsNotEmpty({ message: 'El ID del propietario es obligatorio' })
-    ownerId!: number;
 }

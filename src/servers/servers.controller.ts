@@ -1,4 +1,4 @@
-import { Controller, Body, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, HttpCode, } from '@nestjs/common';
+import { Controller, Body, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, HttpCode, Req, } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateServerDto } from './dto/create-server.dto';
 import { UpdateServerDto } from './dto/update-server.dto';
@@ -12,8 +12,8 @@ export class ServersController {
 
     // POST/servers
     @Post()
-    create(@Body() createServerDto: CreateServerDto) {
-        return this.serversService.create(createServerDto);
+    create(@Body() createServerDto: CreateServerDto, @Req() req: any) {
+        return this.serversService.create(createServerDto, req.user.userId);
     }
 
     // GET/servers
