@@ -4,7 +4,9 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -50,3 +52,10 @@ model Message {
   channel   Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
 }
+
+// Un usuario puede tener varios servidores
+// Un servidor pertenece a un usuario propietario
+// Un servidor puede tener varios canales
+// Un canal pertenece a un servidor
+// Un mensaje pertenece a un usuario
+// Un mensaje pertenece a un canal

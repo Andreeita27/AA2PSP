@@ -1,3 +1,4 @@
+// Aquí arranca Nest.js
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
