@@ -9,6 +9,7 @@ export class UsersService {
     constructor(private readonly prisma: PrismaService) {}
 
     // Crear un nuevo usuario
+    //Este método no cifra la contraseña
     async create(CreateUserDto: CreateUserDto){
         return this.prisma.user.create({
             data: CreateUserDto,
@@ -18,10 +19,16 @@ export class UsersService {
     // Obtener todos los usuarios
     async findAll() {
         return this.prisma.user.findMany({
+            select: { // no incluyo password
+                id: true,
+                username: true,
+                email: true,
+                createdAt: true,
+            },
             orderBy: {
                 id: 'asc',
-            }
-        })
+            },
+        });
 
     }
 
@@ -29,6 +36,12 @@ export class UsersService {
     async findOne(id: number) {
         const user = await this.prisma.user.findUnique({
             where: { id },
+            select: { // no incluyo password
+                id: true,
+                username: true,
+                email: true,
+                createdAt: true,
+            },
         });
 
         if (!user) {
