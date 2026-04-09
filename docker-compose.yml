@@ -1,8 +1,9 @@
+version: '3.8'
 services:
   postgres:
     image: postgres:16
     container_name: discord_postgres
-    restart: always
+    restart: "no"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -11,6 +12,17 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: discord-server
+    restart: "no"
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/discord_db
 
 volumes:
   postgres_data:
