@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
 // PartialType crea una versión opcional de todos los campos de CreateUserDto
