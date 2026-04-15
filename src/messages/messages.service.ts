@@ -27,6 +27,32 @@ export class MessagesService {
             throw new NotFoundException(`El usuario con ID ${userId} no existe.`);
         }
 
+        const serverMembership = await this.prisma.serverMember.findUnique({
+            where: {
+                userId_serverId: {
+                    userId,
+                    serverId: channel.serverId,
+                },
+            },
+        });
+
+        if (!serverMembership) {
+            throw new ForbiddenException(`No puedes enviar mensajes en un servidor al que no perteneces`);
+        }
+
+        const channelMembership = await this.prisma.channelMember.findUnique({
+            where: {
+                userId_channelId: {
+                    userId,
+                    channelId,
+                },
+            },
+        });
+
+        if (!channelMembership) {
+            throw new ForbiddenException(`No puedes enviar mensajes en un canal al que no estás unido`);
+        }
+
         return this.prisma.message.create({
             data: {
                 content: createMessageDto.content,

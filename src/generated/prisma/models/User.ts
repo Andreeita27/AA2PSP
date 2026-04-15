@@ -216,7 +216,9 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  servers?: Prisma.ServerListRelationFilter
+  ownedServers?: Prisma.ServerListRelationFilter
+  serverMemberships?: Prisma.ServerMemberListRelationFilter
+  channelMemberships?: Prisma.ChannelMemberListRelationFilter
   messages?: Prisma.MessageListRelationFilter
 }
 
@@ -226,7 +228,9 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  servers?: Prisma.ServerOrderByRelationAggregateInput
+  ownedServers?: Prisma.ServerOrderByRelationAggregateInput
+  serverMemberships?: Prisma.ServerMemberOrderByRelationAggregateInput
+  channelMemberships?: Prisma.ChannelMemberOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
 }
 
@@ -239,7 +243,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   password?: Prisma.StringFilter<"User"> | string
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  servers?: Prisma.ServerListRelationFilter
+  ownedServers?: Prisma.ServerListRelationFilter
+  serverMemberships?: Prisma.ServerMemberListRelationFilter
+  channelMemberships?: Prisma.ChannelMemberListRelationFilter
   messages?: Prisma.MessageListRelationFilter
 }, "id" | "username" | "email">
 
@@ -272,7 +278,9 @@ export type UserCreateInput = {
   email: string
   password: string
   createdAt?: Date | string
-  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  ownedServers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  serverMemberships?: Prisma.ServerMemberCreateNestedManyWithoutUserInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
 }
 
@@ -282,7 +290,9 @@ export type UserUncheckedCreateInput = {
   email: string
   password: string
   createdAt?: Date | string
-  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  ownedServers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  serverMemberships?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutUserInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -291,7 +301,9 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  ownedServers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  serverMemberships?: Prisma.ServerMemberUpdateManyWithoutUserNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
 }
 
@@ -301,7 +313,9 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedServers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  serverMemberships?: Prisma.ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -381,18 +395,18 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type UserCreateNestedOneWithoutServersInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutServersInput, Prisma.UserUncheckedCreateWithoutServersInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutServersInput
+export type UserCreateNestedOneWithoutOwnedServersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedServersInput, Prisma.UserUncheckedCreateWithoutOwnedServersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedServersInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutServersNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutServersInput, Prisma.UserUncheckedCreateWithoutServersInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutServersInput
-  upsert?: Prisma.UserUpsertWithoutServersInput
+export type UserUpdateOneRequiredWithoutOwnedServersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOwnedServersInput, Prisma.UserUncheckedCreateWithoutOwnedServersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOwnedServersInput
+  upsert?: Prisma.UserUpsertWithoutOwnedServersInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutServersInput, Prisma.UserUpdateWithoutServersInput>, Prisma.UserUncheckedUpdateWithoutServersInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOwnedServersInput, Prisma.UserUpdateWithoutOwnedServersInput>, Prisma.UserUncheckedUpdateWithoutOwnedServersInput>
 }
 
 export type UserCreateNestedOneWithoutMessagesInput = {
@@ -409,53 +423,89 @@ export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
 }
 
-export type UserCreateWithoutServersInput = {
+export type UserCreateNestedOneWithoutServerMembershipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutServerMembershipsInput, Prisma.UserUncheckedCreateWithoutServerMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutServerMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutServerMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutServerMembershipsInput, Prisma.UserUncheckedCreateWithoutServerMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutServerMembershipsInput
+  upsert?: Prisma.UserUpsertWithoutServerMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutServerMembershipsInput, Prisma.UserUpdateWithoutServerMembershipsInput>, Prisma.UserUncheckedUpdateWithoutServerMembershipsInput>
+}
+
+export type UserCreateNestedOneWithoutChannelMembershipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChannelMembershipsInput, Prisma.UserUncheckedCreateWithoutChannelMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChannelMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChannelMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChannelMembershipsInput, Prisma.UserUncheckedCreateWithoutChannelMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChannelMembershipsInput
+  upsert?: Prisma.UserUpsertWithoutChannelMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChannelMembershipsInput, Prisma.UserUpdateWithoutChannelMembershipsInput>, Prisma.UserUncheckedUpdateWithoutChannelMembershipsInput>
+}
+
+export type UserCreateWithoutOwnedServersInput = {
   username: string
   email: string
   password: string
   createdAt?: Date | string
+  serverMemberships?: Prisma.ServerMemberCreateNestedManyWithoutUserInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutServersInput = {
+export type UserUncheckedCreateWithoutOwnedServersInput = {
   id?: number
   username: string
   email: string
   password: string
   createdAt?: Date | string
+  serverMemberships?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutUserInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutUserInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutServersInput = {
+export type UserCreateOrConnectWithoutOwnedServersInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutServersInput, Prisma.UserUncheckedCreateWithoutServersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedServersInput, Prisma.UserUncheckedCreateWithoutOwnedServersInput>
 }
 
-export type UserUpsertWithoutServersInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutServersInput, Prisma.UserUncheckedUpdateWithoutServersInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutServersInput, Prisma.UserUncheckedCreateWithoutServersInput>
+export type UserUpsertWithoutOwnedServersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOwnedServersInput, Prisma.UserUncheckedUpdateWithoutOwnedServersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOwnedServersInput, Prisma.UserUncheckedCreateWithoutOwnedServersInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutServersInput = {
+export type UserUpdateToOneWithWhereWithoutOwnedServersInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutServersInput, Prisma.UserUncheckedUpdateWithoutServersInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOwnedServersInput, Prisma.UserUncheckedUpdateWithoutOwnedServersInput>
 }
 
-export type UserUpdateWithoutServersInput = {
+export type UserUpdateWithoutOwnedServersInput = {
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serverMemberships?: Prisma.ServerMemberUpdateManyWithoutUserNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutServersInput = {
+export type UserUncheckedUpdateWithoutOwnedServersInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   username?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  serverMemberships?: Prisma.ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -464,7 +514,9 @@ export type UserCreateWithoutMessagesInput = {
   email: string
   password: string
   createdAt?: Date | string
-  servers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  ownedServers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  serverMemberships?: Prisma.ServerMemberCreateNestedManyWithoutUserInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessagesInput = {
@@ -473,7 +525,9 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   email: string
   password: string
   createdAt?: Date | string
-  servers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  ownedServers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  serverMemberships?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutUserInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessagesInput = {
@@ -497,7 +551,9 @@ export type UserUpdateWithoutMessagesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  servers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  ownedServers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  serverMemberships?: Prisma.ServerMemberUpdateManyWithoutUserNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -506,7 +562,125 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  servers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedServers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  serverMemberships?: Prisma.ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutServerMembershipsInput = {
+  username: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  ownedServers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutServerMembershipsInput = {
+  id?: number
+  username: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  ownedServers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutServerMembershipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutServerMembershipsInput, Prisma.UserUncheckedCreateWithoutServerMembershipsInput>
+}
+
+export type UserUpsertWithoutServerMembershipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutServerMembershipsInput, Prisma.UserUncheckedUpdateWithoutServerMembershipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutServerMembershipsInput, Prisma.UserUncheckedCreateWithoutServerMembershipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutServerMembershipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutServerMembershipsInput, Prisma.UserUncheckedUpdateWithoutServerMembershipsInput>
+}
+
+export type UserUpdateWithoutServerMembershipsInput = {
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedServers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutServerMembershipsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedServers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChannelMembershipsInput = {
+  username: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  ownedServers?: Prisma.ServerCreateNestedManyWithoutOwnerInput
+  serverMemberships?: Prisma.ServerMemberCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChannelMembershipsInput = {
+  id?: number
+  username: string
+  email: string
+  password: string
+  createdAt?: Date | string
+  ownedServers?: Prisma.ServerUncheckedCreateNestedManyWithoutOwnerInput
+  serverMemberships?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutUserInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChannelMembershipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChannelMembershipsInput, Prisma.UserUncheckedCreateWithoutChannelMembershipsInput>
+}
+
+export type UserUpsertWithoutChannelMembershipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChannelMembershipsInput, Prisma.UserUncheckedUpdateWithoutChannelMembershipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChannelMembershipsInput, Prisma.UserUncheckedCreateWithoutChannelMembershipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChannelMembershipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChannelMembershipsInput, Prisma.UserUncheckedUpdateWithoutChannelMembershipsInput>
+}
+
+export type UserUpdateWithoutChannelMembershipsInput = {
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedServers?: Prisma.ServerUpdateManyWithoutOwnerNestedInput
+  serverMemberships?: Prisma.ServerMemberUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChannelMembershipsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedServers?: Prisma.ServerUncheckedUpdateManyWithoutOwnerNestedInput
+  serverMemberships?: Prisma.ServerMemberUncheckedUpdateManyWithoutUserNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -515,12 +689,16 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
  */
 
 export type UserCountOutputType = {
-  servers: number
+  ownedServers: number
+  serverMemberships: number
+  channelMemberships: number
   messages: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  servers?: boolean | UserCountOutputTypeCountServersArgs
+  ownedServers?: boolean | UserCountOutputTypeCountOwnedServersArgs
+  serverMemberships?: boolean | UserCountOutputTypeCountServerMembershipsArgs
+  channelMemberships?: boolean | UserCountOutputTypeCountChannelMembershipsArgs
   messages?: boolean | UserCountOutputTypeCountMessagesArgs
 }
 
@@ -537,8 +715,22 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountServersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountOwnedServersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ServerWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountServerMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ServerMemberWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChannelMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChannelMemberWhereInput
 }
 
 /**
@@ -555,7 +747,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   email?: boolean
   password?: boolean
   createdAt?: boolean
-  servers?: boolean | Prisma.User$serversArgs<ExtArgs>
+  ownedServers?: boolean | Prisma.User$ownedServersArgs<ExtArgs>
+  serverMemberships?: boolean | Prisma.User$serverMembershipsArgs<ExtArgs>
+  channelMemberships?: boolean | Prisma.User$channelMembershipsArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -586,7 +780,9 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "email" | "password" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  servers?: boolean | Prisma.User$serversArgs<ExtArgs>
+  ownedServers?: boolean | Prisma.User$ownedServersArgs<ExtArgs>
+  serverMemberships?: boolean | Prisma.User$serverMembershipsArgs<ExtArgs>
+  channelMemberships?: boolean | Prisma.User$channelMembershipsArgs<ExtArgs>
   messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -596,7 +792,9 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    servers: Prisma.$ServerPayload<ExtArgs>[]
+    ownedServers: Prisma.$ServerPayload<ExtArgs>[]
+    serverMemberships: Prisma.$ServerMemberPayload<ExtArgs>[]
+    channelMemberships: Prisma.$ChannelMemberPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -999,7 +1197,9 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  servers<T extends Prisma.User$serversArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serversArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedServers<T extends Prisma.User$ownedServersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedServersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  serverMemberships<T extends Prisma.User$serverMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serverMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  channelMemberships<T extends Prisma.User$channelMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$channelMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1428,9 +1628,9 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.servers
+ * User.ownedServers
  */
-export type User$serversArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$ownedServersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Server
    */
@@ -1449,6 +1649,54 @@ export type User$serversArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ServerScalarFieldEnum | Prisma.ServerScalarFieldEnum[]
+}
+
+/**
+ * User.serverMemberships
+ */
+export type User$serverMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServerMember
+   */
+  select?: Prisma.ServerMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ServerMember
+   */
+  omit?: Prisma.ServerMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServerMemberInclude<ExtArgs> | null
+  where?: Prisma.ServerMemberWhereInput
+  orderBy?: Prisma.ServerMemberOrderByWithRelationInput | Prisma.ServerMemberOrderByWithRelationInput[]
+  cursor?: Prisma.ServerMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServerMemberScalarFieldEnum | Prisma.ServerMemberScalarFieldEnum[]
+}
+
+/**
+ * User.channelMemberships
+ */
+export type User$channelMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChannelMember
+   */
+  select?: Prisma.ChannelMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChannelMember
+   */
+  omit?: Prisma.ChannelMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChannelMemberInclude<ExtArgs> | null
+  where?: Prisma.ChannelMemberWhereInput
+  orderBy?: Prisma.ChannelMemberOrderByWithRelationInput | Prisma.ChannelMemberOrderByWithRelationInput[]
+  cursor?: Prisma.ChannelMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChannelMemberScalarFieldEnum | Prisma.ChannelMemberScalarFieldEnum[]
 }
 
 /**

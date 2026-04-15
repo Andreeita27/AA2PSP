@@ -37,3 +37,13 @@ export type Channel = Prisma.ChannelModel
  * 
  */
 export type Message = Prisma.MessageModel
+/**
+ * Model ServerMember
+ * 
+ */
+export type ServerMember = Prisma.ServerMemberModel
+/**
+ * Model ChannelMember
+ * 
+ */
+export type ChannelMember = Prisma.ChannelMemberModel

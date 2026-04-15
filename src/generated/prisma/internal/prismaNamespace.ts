@@ -387,7 +387,9 @@ export const ModelName = {
   User: 'User',
   Server: 'Server',
   Channel: 'Channel',
-  Message: 'Message'
+  Message: 'Message',
+  ServerMember: 'ServerMember',
+  ChannelMember: 'ChannelMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "server" | "channel" | "message"
+    modelProps: "user" | "server" | "channel" | "message" | "serverMember" | "channelMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +705,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ServerMember: {
+      payload: Prisma.$ServerMemberPayload<ExtArgs>
+      fields: Prisma.ServerMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ServerMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ServerMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.ServerMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ServerMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+        }
+        findMany: {
+          args: Prisma.ServerMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>[]
+        }
+        create: {
+          args: Prisma.ServerMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+        }
+        createMany: {
+          args: Prisma.ServerMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ServerMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.ServerMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+        }
+        update: {
+          args: Prisma.ServerMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.ServerMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ServerMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ServerMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.ServerMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ServerMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.ServerMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateServerMember>
+        }
+        groupBy: {
+          args: Prisma.ServerMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ServerMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ServerMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ServerMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChannelMember: {
+      payload: Prisma.$ChannelMemberPayload<ExtArgs>
+      fields: Prisma.ChannelMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChannelMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChannelMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.ChannelMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChannelMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>
+        }
+        findMany: {
+          args: Prisma.ChannelMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>[]
+        }
+        create: {
+          args: Prisma.ChannelMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>
+        }
+        createMany: {
+          args: Prisma.ChannelMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChannelMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.ChannelMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>
+        }
+        update: {
+          args: Prisma.ChannelMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChannelMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChannelMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChannelMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChannelMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChannelMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.ChannelMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChannelMember>
+        }
+        groupBy: {
+          args: Prisma.ChannelMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChannelMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChannelMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChannelMemberCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -784,6 +934,26 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const ServerMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  serverId: 'serverId',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ServerMemberScalarFieldEnum = (typeof ServerMemberScalarFieldEnum)[keyof typeof ServerMemberScalarFieldEnum]
+
+
+export const ChannelMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  channelId: 'channelId',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ChannelMemberScalarFieldEnum = (typeof ChannelMemberScalarFieldEnum)[keyof typeof ChannelMemberScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -970,6 +1140,8 @@ export type GlobalOmitConfig = {
   server?: Prisma.ServerOmit
   channel?: Prisma.ChannelOmit
   message?: Prisma.MessageOmit
+  serverMember?: Prisma.ServerMemberOmit
+  channelMember?: Prisma.ChannelMemberOmit
 }
 
 /* Types for Logging */

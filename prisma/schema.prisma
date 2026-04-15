@@ -4,8 +4,8 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -14,33 +14,60 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String    @unique
-  email     String    @unique
-  password  String
-  servers   Server[]
-  messages  Message[]
-  createdAt DateTime  @default(now())
+  id                 Int             @id @default(autoincrement())
+  username           String          @unique
+  email              String          @unique
+  password           String
+
+  // Servidores que este usuario ha creado como propietario
+  ownedServers       Server[]
+
+  // Membresías del usuario en servidores
+  serverMemberships  ServerMember[]
+
+  // Membresías del usuario en canales
+  channelMemberships ChannelMember[]
+
+  // Mensajes escritos por el usuario
+  messages           Message[]
+
+  createdAt          DateTime        @default(now())
 }
 
 model Server {
-  id          Int       @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   description String?
   ownerId     Int
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  // Usuario propietario del servidor
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  // Canales que pertenecen al servidor
   channels    Channel[]
-  createdAt   DateTime  @default(now())
+
+  // Usuarios que se han unido al servidor
+  members     ServerMember[]
+
+  createdAt   DateTime       @default(now())
 }
 
 model Channel {
-  id        Int       @id @default(autoincrement())
-  name      String
-  type      String    @default("TEXT")
-  serverId  Int
-  server    Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
-  messages  Message[]
-  createdAt DateTime  @default(now())
+  id          Int             @id @default(autoincrement())
+  name        String
+  type        String          @default("TEXT")
+  serverId    Int
+
+  // Servidor al que pertenece el canal
+  server      Server          @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  // Mensajes escritos en este canal
+  messages    Message[]
+
+  // Usuarios que se han unido a este canal
+  members     ChannelMember[]
+
+  createdAt   DateTime        @default(now())
 }
 
 model Message {
@@ -48,9 +75,39 @@ model Message {
   content   String
   userId    Int
   channelId Int
+
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   channel   Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
   createdAt DateTime  @default(now())
+}
+
+// Tabla intermedia: usuario unido a servidor
+model ServerMember {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  serverId  Int
+  joinedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  // Evita que un mismo usuario se una 2 veces al mismo servidor
+  @@unique([userId, serverId])
+}
+
+// Tabla intermedia: usuario unido a canal
+model ChannelMember {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  channelId Int
+  joinedAt  DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  // Evita que un mismo usuario se una 2 veces al mismo canal
+  @@unique([userId, channelId])
 }
 
 // Un usuario puede tener varios servidores

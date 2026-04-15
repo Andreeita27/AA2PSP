@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateServerDto } from './dto/create-server.dto';
 import { UpdateServerDto } from './dto/update-server.dto';
@@ -25,6 +25,11 @@ export class ServersService {
                 name: createServerDto.name,
                 description: createServerDto.description,
                 ownerId,
+                members: {
+                    create: {
+                        userId: ownerId,
+                    },
+                },
             },
             include: {
                 owner:{
@@ -51,6 +56,44 @@ export class ServersService {
                         createdAt: true,
                     },
                 },
+                _count: {
+                    select: {
+                        channels: true,
+                        members: true,
+                    },
+                },
+            },
+            orderBy: {
+                id: 'asc',
+            },
+        });
+    }
+
+    // Obtener solo los servidores a los que pertenece el usuario autenticado
+    async findMyServers(userId: number) {
+        return this.prisma.server.findMany({
+            where: {
+                members: {
+                    some: {
+                        userId,
+                    },
+                },
+            },
+            include: {
+                owner: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                        createdAt: true,
+                    },
+                },
+                _count: {
+                    select: {
+                        channels: true,
+                        members: true,
+                    },
+                },
             },
             orderBy: {
                 id: 'asc',
@@ -71,6 +114,12 @@ export class ServersService {
                         createdAt: true,
                     },
                 },
+                _count: {
+                    select: {
+                        channels: true,
+                        members: true,
+                    },
+                },
             },
         });
 
@@ -79,6 +128,113 @@ export class ServersService {
         }
 
         return server;
+    }
+
+    // Unirse a un servidor
+    async joinServer(serverId: number, userId: number) {
+        const server = await this.prisma.server.findUnique({
+            where: { id: serverId },
+        });
+
+        if (!server) {
+            throw new NotFoundException(`No se encontró un servidor con id ${serverId}`);
+        }
+
+        const user = await this.prisma.server.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            throw new NotFoundException(`No se encontró un usuario con id ${userId}`);
+        }
+
+        const existingMembership = await this.prisma.serverMember.findUnique({
+            where: {
+                userId_serverId: {
+                    userId,
+                    serverId,
+                },
+            },
+        });
+
+        if (existingMembership) {
+            throw new BadRequestException(`Ya estás unido a este servidor`);
+        }
+
+        return this.prisma.serverMember.create({
+            data: {
+                userId,
+                serverId,
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        email: true,
+                    },
+                },
+                server: {
+                    select: {
+                        id: true,
+                        name: true,
+                        description: true,
+                    },
+                },
+            },
+        });
+    }
+
+    // Salir de un servidor
+    async leaveServer(serverId: number, userId: number) {
+        const server = await this.prisma.server.findUnique({
+            where: { id: serverId },
+        });
+
+        if (!server) {
+            throw new NotFoundException(`No se encontró un servidor con id ${serverId}`);
+        }
+
+        // El owner no puede salir de su propio servidor sin borrarlo
+        if (server.ownerId === userId) {
+            throw new ForbiddenException(`El propietario no puede salir de su propio servidor`);
+        }
+
+        const membership = await this.prisma.serverMember.findUnique({
+            where: {
+                userId_serverId: {
+                    userId,
+                    serverId,
+                },
+            },
+        });
+
+        if (!membership) {
+            throw new NotFoundException(`No perteneces a este servidor`);
+        }
+
+        // Cuando el usuario sale del servidor, se limpia la membresía tambien
+        await this.prisma.channelMember.deleteMany({
+            where: {
+                userId,
+                channel: {
+                    serverId,
+                },
+            },
+        });
+
+        await this.prisma.serverMember.delete({
+            where: {
+                userId_serverId: {
+                    userId,
+                    serverId,
+                },
+            },
+        });
+
+        return {
+            message: 'Has salido del servidor correctamente',
+        };
     }
 
     //Actualizar un servidor por su ID
