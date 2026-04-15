@@ -1,4 +1,4 @@
-import { Controller, Body, Delete, Get, HttpCode, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Controller, Body, Delete, Get, HttpCode, Param, ParseIntPipe, Patch, Post, UseGuards, Req, } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChannelsService } from './channels.service';
 import { CreateChannelDto } from './dto/create-channel.dto';
@@ -31,8 +31,9 @@ export class ChannelsController {
     create(
         @Param('serverId', ParseIntPipe) serverId: number,
         @Body()createChannelDto: CreateChannelDto,
+        @Req() req: any,
     ) {
-        return this.channelsService.create(createChannelDto, serverId);
+        return this.channelsService.create(createChannelDto, serverId, req.user.userId);
     }
 
     // GET/channels
@@ -46,6 +47,62 @@ export class ChannelsController {
     })
     findAll() {
         return this.channelsService.findAll();
+    }
+
+    // GET/channels/me/joined
+    @Get('channels/me/joined')
+    @ApiOperation({
+        summary: 'Obtener mis canales',
+        description: 'Devuelve los canales a los que está unido el usuario autenticado',
+    })
+    @ApiOkResponse({
+        description: 'Lista de canales del usuario obtenida correctamente',
+    })
+    findMyChannels(@Req() req: any) {
+        return this.channelsService.findMyChannels(req.user.userId);
+    }
+
+    // POST/channels/:id/join
+    @Post('channels/:id/join')
+    @ApiOperation({
+        summary: 'Unirse a un canal',
+        description: 'Permite al usuario autenticado unirse a un canal',
+    })
+    @ApiParam({
+        name: 'id',
+        example: 1,
+        description: 'ID del canal al que el usuario quiere unirse',
+    })
+    @ApiOkResponse({
+        description: 'Usuario unido al canal correctamente',
+    })
+    @ApiBadRequestResponse({
+        description: 'El ID enviado no es válido',
+    })
+    joinChannel(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+        return this.channelsService.joinChannel(id, req.user.userId);
+    }
+
+    // DELETE/channels/:id/join
+    @HttpCode(204)
+    @Delete('channels/:id/join')
+    @ApiOperation({
+        summary: 'Salir de un canal',
+        description: 'Permite al usuario autenticado salir de un canal',
+    })
+    @ApiParam({
+        name: 'id',
+        example: 1,
+        description: 'ID del canal del que el usuario quiere salir',
+    })
+    @ApiNoContentResponse({
+        description: 'Usuario eliminado del canal correctamente',
+    })
+    @ApiBadRequestResponse({
+        description: 'ID enviado no válido',
+    })
+    leaveChannel(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+        return this.channelsService.leaveChannel(id, req.user.userId);
     }
 
     // GET/servers/:serverId/channels

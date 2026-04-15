@@ -222,6 +222,7 @@ export type ServerWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   channels?: Prisma.ChannelListRelationFilter
+  members?: Prisma.ServerMemberListRelationFilter
 }
 
 export type ServerOrderByWithRelationInput = {
@@ -232,6 +233,7 @@ export type ServerOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
   channels?: Prisma.ChannelOrderByRelationAggregateInput
+  members?: Prisma.ServerMemberOrderByRelationAggregateInput
 }
 
 export type ServerWhereUniqueInput = Prisma.AtLeast<{
@@ -245,6 +247,7 @@ export type ServerWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Server"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   channels?: Prisma.ChannelListRelationFilter
+  members?: Prisma.ServerMemberListRelationFilter
 }, "id">
 
 export type ServerOrderByWithAggregationInput = {
@@ -275,8 +278,9 @@ export type ServerCreateInput = {
   name: string
   description?: string | null
   createdAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutServersInput
+  owner: Prisma.UserCreateNestedOneWithoutOwnedServersInput
   channels?: Prisma.ChannelCreateNestedManyWithoutServerInput
+  members?: Prisma.ServerMemberCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateInput = {
@@ -286,14 +290,16 @@ export type ServerUncheckedCreateInput = {
   ownerId: number
   createdAt?: Date | string
   channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutServerInput
+  members?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedServersNestedInput
   channels?: Prisma.ChannelUpdateManyWithoutServerNestedInput
+  members?: Prisma.ServerMemberUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateInput = {
@@ -303,6 +309,7 @@ export type ServerUncheckedUpdateInput = {
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channels?: Prisma.ChannelUncheckedUpdateManyWithoutServerNestedInput
+  members?: Prisma.ServerMemberUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerCreateManyInput = {
@@ -436,11 +443,26 @@ export type ServerUpdateOneRequiredWithoutChannelsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServerUpdateToOneWithWhereWithoutChannelsInput, Prisma.ServerUpdateWithoutChannelsInput>, Prisma.ServerUncheckedUpdateWithoutChannelsInput>
 }
 
+export type ServerCreateNestedOneWithoutMembersInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutMembersInput, Prisma.ServerUncheckedCreateWithoutMembersInput>
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutMembersInput
+  connect?: Prisma.ServerWhereUniqueInput
+}
+
+export type ServerUpdateOneRequiredWithoutMembersNestedInput = {
+  create?: Prisma.XOR<Prisma.ServerCreateWithoutMembersInput, Prisma.ServerUncheckedCreateWithoutMembersInput>
+  connectOrCreate?: Prisma.ServerCreateOrConnectWithoutMembersInput
+  upsert?: Prisma.ServerUpsertWithoutMembersInput
+  connect?: Prisma.ServerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServerUpdateToOneWithWhereWithoutMembersInput, Prisma.ServerUpdateWithoutMembersInput>, Prisma.ServerUncheckedUpdateWithoutMembersInput>
+}
+
 export type ServerCreateWithoutOwnerInput = {
   name: string
   description?: string | null
   createdAt?: Date | string
   channels?: Prisma.ChannelCreateNestedManyWithoutServerInput
+  members?: Prisma.ServerMemberCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutOwnerInput = {
@@ -449,6 +471,7 @@ export type ServerUncheckedCreateWithoutOwnerInput = {
   description?: string | null
   createdAt?: Date | string
   channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutServerInput
+  members?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutOwnerInput = {
@@ -492,7 +515,8 @@ export type ServerCreateWithoutChannelsInput = {
   name: string
   description?: string | null
   createdAt?: Date | string
-  owner: Prisma.UserCreateNestedOneWithoutServersInput
+  owner: Prisma.UserCreateNestedOneWithoutOwnedServersInput
+  members?: Prisma.ServerMemberCreateNestedManyWithoutServerInput
 }
 
 export type ServerUncheckedCreateWithoutChannelsInput = {
@@ -501,6 +525,7 @@ export type ServerUncheckedCreateWithoutChannelsInput = {
   description?: string | null
   ownerId: number
   createdAt?: Date | string
+  members?: Prisma.ServerMemberUncheckedCreateNestedManyWithoutServerInput
 }
 
 export type ServerCreateOrConnectWithoutChannelsInput = {
@@ -523,7 +548,8 @@ export type ServerUpdateWithoutChannelsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  owner?: Prisma.UserUpdateOneRequiredWithoutServersNestedInput
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedServersNestedInput
+  members?: Prisma.ServerMemberUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutChannelsInput = {
@@ -532,6 +558,57 @@ export type ServerUncheckedUpdateWithoutChannelsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ownerId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  members?: Prisma.ServerMemberUncheckedUpdateManyWithoutServerNestedInput
+}
+
+export type ServerCreateWithoutMembersInput = {
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedServersInput
+  channels?: Prisma.ChannelCreateNestedManyWithoutServerInput
+}
+
+export type ServerUncheckedCreateWithoutMembersInput = {
+  id?: number
+  name: string
+  description?: string | null
+  ownerId: number
+  createdAt?: Date | string
+  channels?: Prisma.ChannelUncheckedCreateNestedManyWithoutServerInput
+}
+
+export type ServerCreateOrConnectWithoutMembersInput = {
+  where: Prisma.ServerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServerCreateWithoutMembersInput, Prisma.ServerUncheckedCreateWithoutMembersInput>
+}
+
+export type ServerUpsertWithoutMembersInput = {
+  update: Prisma.XOR<Prisma.ServerUpdateWithoutMembersInput, Prisma.ServerUncheckedUpdateWithoutMembersInput>
+  create: Prisma.XOR<Prisma.ServerCreateWithoutMembersInput, Prisma.ServerUncheckedCreateWithoutMembersInput>
+  where?: Prisma.ServerWhereInput
+}
+
+export type ServerUpdateToOneWithWhereWithoutMembersInput = {
+  where?: Prisma.ServerWhereInput
+  data: Prisma.XOR<Prisma.ServerUpdateWithoutMembersInput, Prisma.ServerUncheckedUpdateWithoutMembersInput>
+}
+
+export type ServerUpdateWithoutMembersInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedServersNestedInput
+  channels?: Prisma.ChannelUpdateManyWithoutServerNestedInput
+}
+
+export type ServerUncheckedUpdateWithoutMembersInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ownerId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  channels?: Prisma.ChannelUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerCreateManyOwnerInput = {
@@ -546,6 +623,7 @@ export type ServerUpdateWithoutOwnerInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channels?: Prisma.ChannelUpdateManyWithoutServerNestedInput
+  members?: Prisma.ServerMemberUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateWithoutOwnerInput = {
@@ -554,6 +632,7 @@ export type ServerUncheckedUpdateWithoutOwnerInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   channels?: Prisma.ChannelUncheckedUpdateManyWithoutServerNestedInput
+  members?: Prisma.ServerMemberUncheckedUpdateManyWithoutServerNestedInput
 }
 
 export type ServerUncheckedUpdateManyWithoutOwnerInput = {
@@ -570,10 +649,12 @@ export type ServerUncheckedUpdateManyWithoutOwnerInput = {
 
 export type ServerCountOutputType = {
   channels: number
+  members: number
 }
 
 export type ServerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channels?: boolean | ServerCountOutputTypeCountChannelsArgs
+  members?: boolean | ServerCountOutputTypeCountMembersArgs
 }
 
 /**
@@ -593,6 +674,13 @@ export type ServerCountOutputTypeCountChannelsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ChannelWhereInput
 }
 
+/**
+ * ServerCountOutputType without action
+ */
+export type ServerCountOutputTypeCountMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ServerMemberWhereInput
+}
+
 
 export type ServerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -602,6 +690,7 @@ export type ServerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   channels?: boolean | Prisma.Server$channelsArgs<ExtArgs>
+  members?: boolean | Prisma.Server$membersArgs<ExtArgs>
   _count?: boolean | Prisma.ServerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["server"]>
 
@@ -635,6 +724,7 @@ export type ServerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type ServerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   channels?: boolean | Prisma.Server$channelsArgs<ExtArgs>
+  members?: boolean | Prisma.Server$membersArgs<ExtArgs>
   _count?: boolean | Prisma.ServerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -649,6 +739,7 @@ export type $ServerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     owner: Prisma.$UserPayload<ExtArgs>
     channels: Prisma.$ChannelPayload<ExtArgs>[]
+    members: Prisma.$ServerMemberPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1052,6 +1143,7 @@ export interface Prisma__ServerClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   owner<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   channels<T extends Prisma.Server$channelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  members<T extends Prisma.Server$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServerMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1508,6 +1600,30 @@ export type Server$channelsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ChannelScalarFieldEnum | Prisma.ChannelScalarFieldEnum[]
+}
+
+/**
+ * Server.members
+ */
+export type Server$membersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServerMember
+   */
+  select?: Prisma.ServerMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ServerMember
+   */
+  omit?: Prisma.ServerMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServerMemberInclude<ExtArgs> | null
+  where?: Prisma.ServerMemberWhereInput
+  orderBy?: Prisma.ServerMemberOrderByWithRelationInput | Prisma.ServerMemberOrderByWithRelationInput[]
+  cursor?: Prisma.ServerMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServerMemberScalarFieldEnum | Prisma.ServerMemberScalarFieldEnum[]
 }
 
 /**

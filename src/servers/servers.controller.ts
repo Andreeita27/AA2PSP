@@ -48,6 +48,62 @@ export class ServersController {
         return this.serversService.findAll();
     }
 
+    // GET/servers/me/joined
+    @Get('me/joined')
+    @ApiOperation({
+        summary: 'Obtener mis servidores',
+        description: 'Devuelve los servidores a los que está unido el usuario autenticado',
+    })
+    @ApiOkResponse({
+        description: 'Lista de servidores del usuario obtenida correctamente',
+    })
+    findMyServers(@Req() req: any) {
+        return this.serversService.findMyServers(req.user.userId);
+    }
+
+    // POST/servers/:id/join
+    @Post(':id/join')
+    @ApiOperation({
+        summary: 'Unirse a un servidor',
+        description: 'Permite al usuario autenticado unirse a un servidor',
+    })
+    @ApiParam({
+        name: 'id',
+        example: 1,
+        description: 'ID del servidor al que el usuario quiere unirse',
+    })
+    @ApiOkResponse({
+        description: 'Usuario unido al servidor correctamente',
+    })
+    @ApiBadRequestResponse({
+        description: 'El ID enviado no es válido',
+    })
+    joinServer(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+        return this.serversService.joinServer(id, req.user.userId);
+    }
+
+    // DELETE/servers/:id/join
+    @HttpCode(204)
+    @Delete(':id/join')
+    @ApiOperation({
+        summary: 'Salir de un servidor',
+        description: 'Permite al usuario autenticado salir de un servidor',
+    })
+    @ApiParam({
+        name: 'id',
+        example: 1,
+        description: 'ID del servidor del que el usuario quiere salir',
+    })
+    @ApiNoContentResponse({
+        description: 'Usuario eliminado del servidor correctamente',
+    })
+    @ApiBadRequestResponse({
+        description: 'El ID enviado no es válido',
+    })
+    leaveServer(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+        return this.serversService.leaveServer(id, req.user.userId);
+    }
+
     // GET/servers/:id
     @Get(':id')
     @ApiOperation({

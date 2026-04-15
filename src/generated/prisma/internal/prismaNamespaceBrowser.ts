@@ -54,7 +54,9 @@ export const ModelName = {
   User: 'User',
   Server: 'Server',
   Channel: 'Channel',
-  Message: 'Message'
+  Message: 'Message',
+  ServerMember: 'ServerMember',
+  ChannelMember: 'ChannelMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -115,6 +117,26 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const ServerMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  serverId: 'serverId',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ServerMemberScalarFieldEnum = (typeof ServerMemberScalarFieldEnum)[keyof typeof ServerMemberScalarFieldEnum]
+
+
+export const ChannelMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  channelId: 'channelId',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ChannelMemberScalarFieldEnum = (typeof ChannelMemberScalarFieldEnum)[keyof typeof ChannelMemberScalarFieldEnum]
 
 
 export const SortOrder = {
