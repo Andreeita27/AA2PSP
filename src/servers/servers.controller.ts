@@ -149,8 +149,9 @@ export class ServersController {
     update(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateServerDto: UpdateServerDto,
+        @Req() req: any, // necesario para comprobar en el service si el usuario es propietario del servidor
     ) {
-        return this.serversService.update(id, updateServerDto);
+        return this.serversService.update(id, updateServerDto, req.user.userId);
     }
 
     // DELETE/servers/:id
@@ -171,7 +172,10 @@ export class ServersController {
     @ApiBadRequestResponse({
         description: 'El ID enviado no es válido',
     })
-    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        await this.serversService.remove(id);
+    async remove(
+        @Param('id', ParseIntPipe) id: number,
+        @Req() req: any, // necesario para comprobar en el service si el usuario es propietario del servidor
+    ): Promise<void> {
+        await this.serversService.remove(id, req.user.userId);
     }
 }

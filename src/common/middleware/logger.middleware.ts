@@ -27,6 +27,7 @@ export class LoggerMiddleware implements NestMiddleware {
             // subimos niveles para dejarlo en la raíz del proyecto
             const logFilePath = path.join(__dirname, '../../../logs.txt');
 
+            // appendFile añade cada log al final del archivo sin borrar los logs anteriores
             fs.appendFile(logFilePath, log + '\n', (err) => {
                 if (err) {
                     console.error('Error escribiendo en logs.txt', err);

@@ -9,7 +9,7 @@ export class UpdateChannelDto {
     })
     @IsString({ message: 'El nombre del canal debe ser un texto' })
     @IsOptional()
-    name?: string;
+    name?: string; // el ? indica que puede ser undefined si el usuario no lo envia
 
     // Tipo del canal
     @ApiPropertyOptional({
@@ -20,3 +20,4 @@ export class UpdateChannelDto {
     @IsOptional()
     type?: string;
 }
+// Pongo todos los campos opcionales porque el usuario puede modificar solo una parte de la informacion

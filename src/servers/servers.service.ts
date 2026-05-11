@@ -5,7 +5,8 @@ import { UpdateServerDto } from './dto/update-server.dto';
 
 @Injectable()
 export class ServersService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) { }
+
     //Crear un nuevo servidor (guild)
     //El ownerId no llega desde el body, sino desde el usuario autenticado
     async create(createServerDto: CreateServerDto, ownerId: number) {
@@ -32,7 +33,7 @@ export class ServersService {
                 },
             },
             include: {
-                owner:{
+                owner: {
                     select: {
                         id: true,
                         username: true,
@@ -48,7 +49,7 @@ export class ServersService {
     async findAll() {
         return this.prisma.server.findMany({
             include: {
-                owner:{
+                owner: {
                     select: {
                         id: true,
                         username: true,
@@ -106,7 +107,7 @@ export class ServersService {
         const server = await this.prisma.server.findUnique({
             where: { id },
             include: {
-                owner:{
+                owner: {
                     select: {
                         id: true,
                         username: true,
@@ -140,7 +141,8 @@ export class ServersService {
             throw new NotFoundException(`No se encontró un servidor con id ${serverId}`);
         }
 
-        const user = await this.prisma.server.findUnique({
+        // Comprobamos que el usuario exista antes de añadirlo como miembro del servidor
+        const user = await this.prisma.user.findUnique({
             where: { id: userId },
         });
 
@@ -238,14 +240,25 @@ export class ServersService {
     }
 
     //Actualizar un servidor por su ID
-    async update(id: number, updateServerDto: UpdateServerDto) {
-        await this.findOne(id); // Verificar que el servidor exista antes de actualizar
+    async update(id: number, updateServerDto: UpdateServerDto, userId: number) {
+        const server = await this.prisma.server.findUnique({
+            where: { id },
+        });
+
+        if (!server) {
+            throw new NotFoundException(`No se encontró un servidor con id ${id}`);
+        }
+
+        // Solo el propietario del servidor puede modificarlo
+        if (server.ownerId !== userId) {
+            throw new ForbiddenException('No tienes permisos para modificar este servidor');
+        }
 
         return this.prisma.server.update({
             where: { id },
             data: updateServerDto,
             include: {
-                owner:{
+                owner: {
                     select: {
                         id: true,
                         username: true,
@@ -258,10 +271,21 @@ export class ServersService {
     }
 
     //Eliminar un servidor por su ID
-    async remove(id: number) {
-        await this.findOne(id); // Verificar que el servidor exista antes de eliminar
+    async remove(id: number, userId: number) {
+        const server = await this.prisma.server.findUnique({
+            where: { id },
+        });
 
-        return this.prisma.server.delete({
+        if (!server) {
+            throw new NotFoundException(`No se encontró un servidor con id ${id}`);
+        }
+
+        // Solo el propietario del servidor puede eliminarlo
+        if (server.ownerId !== userId) {
+            throw new ForbiddenException('No tienes permisos para eliminar este servidor');
+        }
+
+        await this.prisma.server.delete({
             where: { id },
         });
     }

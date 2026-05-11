@@ -9,7 +9,7 @@ export class CreateChannelDto {
     })
     @IsString({ message: 'El nombre del canal debe ser un texto' })
     @IsNotEmpty({ message: 'El nombre del canal es obligatorio' })
-    name!: string;
+    name!: string; // el ! le indica a typescript que el valor existira
 
     // Tipo del canal
     @ApiPropertyOptional({
@@ -18,5 +18,5 @@ export class CreateChannelDto {
     })
     @IsString({ message: 'El tipo del canal debe ser un texto' })
     @IsOptional()
-    type?: string;
+    type?: string; // el ? indica que puede ser undefined si el usuario no lo envia
 }
