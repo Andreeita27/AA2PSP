@@ -1,6 +1,8 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+// Datos necesarios para registrar un usuario
+// Valida que los datos enviados al backend tengan el formato correcto antes de llegar a la logica de negocio
 export class RegisterDto {
     //Nombre de usuaario visible dentro de la aplicación
     @ApiProperty({
@@ -9,7 +11,7 @@ export class RegisterDto {
     })
     @IsString({ message: 'El nombre de usuario debe ser un texto' })
     @IsNotEmpty({ message: 'El nombre de usuario es obligatorio' })
-    username!: string;
+    username!: string; // El ! le indica a typescript que el valor existira
 
     //Email del usuario que se usa para el loggin
     @ApiProperty({

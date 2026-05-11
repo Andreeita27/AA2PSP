@@ -5,7 +5,7 @@ import { UpdateChannelDto } from './dto/update-channel.dto';
 
 @Injectable()
 export class ChannelsService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) { }
     //Crear un nuevo canal en un servidor concreto
     // El serverId llega en la URL
     // El usuario que lo crea tiene que pertenecer al servidor y se mete automáticamente como miembro del canal
@@ -233,7 +233,7 @@ export class ChannelsService {
                         email: true,
                     },
                 },
-                channel:  {
+                channel: {
                     select: {
                         id: true,
                         name: true,
@@ -283,14 +283,23 @@ export class ChannelsService {
     }
 
     //Actualizar un canal concreto por su ID
-    async update(id: number, updateChannelDto: UpdateChannelDto) {
+    async update(id: number, updateChannelDto: UpdateChannelDto, userId: number) {
         // Comprobamos que el canal exista
         const channel = await this.prisma.channel.findUnique({
             where: { id },
+            include: {
+                server: true,
+            },
         });
 
         if (!channel) {
             throw new NotFoundException(`Canal con ID ${id} no encontrado`);
+        }
+
+        // Comprobamos que el usuario autenticado sea el propietario del servidor
+        // al que pertenece este canal
+        if (channel.server.ownerId !== userId) {
+            throw new ForbiddenException('No tienes permisos para modificar este canal');
         }
 
         return this.prisma.channel.update({
@@ -311,8 +320,23 @@ export class ChannelsService {
     }
 
     //Eliminar un canal por su ID
-    async remove(id: number) {
-        await this.findOne(id); // Verificamos que el canal existe antes de eliminarlo
+    async remove(id: number, userId: number) {
+        // Comprobamos que el canal exista y obtenemos también su servidor
+        const channel = await this.prisma.channel.findUnique({
+            where: { id },
+            include: {
+                server: true,
+            },
+        });
+
+        if (!channel) {
+            throw new NotFoundException(`Canal con ID ${id} no encontrado`);
+        }
+
+        // Solo el propietario del servidor puede eliminar sus canales
+        if (channel.server.ownerId !== userId) {
+            throw new ForbiddenException('No tienes permisos para eliminar este canal');
+        }
 
         await this.prisma.channel.delete({
             where: { id },

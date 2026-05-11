@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -6,11 +6,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UsersService {
     // Inyectamos PrismaService para poder acceder a la base de datos
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) { }
 
     // Crear un nuevo usuario
     //Este método no cifra la contraseña
-    async create(CreateUserDto: CreateUserDto){
+    async create(CreateUserDto: CreateUserDto) {
         return this.prisma.user.create({
             data: CreateUserDto,
         })
@@ -52,20 +52,36 @@ export class UsersService {
     }
 
     //Actualizar un usuario por id
-    async update(id: number, updateUserDto: UpdateUserDto) {
+    async update(id: number, updateUserDto: UpdateUserDto, userId: number) {
         await this.findOne(id);
+
+        // Comprobamos que el usuario autenticado solo pueda modificar su propia cuenta
+        if (id !== userId) {
+            throw new ForbiddenException('No tienes permisos para modificar este usuario');
+        }
 
         return this.prisma.user.update({
             where: { id },
             data: updateUserDto,
+            select: { // no incluyo password
+                id: true,
+                username: true,
+                email: true,
+                createdAt: true,
+            },
         });
     }
 
     // Eliminar un usuario por id
-    async remove(id: number) {
+    async remove(id: number, userId: number) {
         await this.findOne(id);
 
-        return this.prisma.user.delete({
+        // Comprobamos que el usuario autenticado solo pueda eliminar su propia cuenta
+        if (id !== userId) {
+            throw new ForbiddenException('No tienes permisos para eliminar este usuario');
+        }
+
+        await this.prisma.user.delete({
             where: { id },
         });
     }

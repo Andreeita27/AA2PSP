@@ -1,10 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, HttpCode, } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, HttpCode, Req, UseGuards, } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiNoContentResponse, ApiParam, ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse, } from '@nestjs/swagger';
+import { ApiNoContentResponse, ApiParam, ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse, } from '@nestjs/swagger';
 
 @ApiTags('users')
 @ApiBearerAuth('JWT-auth') // Indica que estas rutas usan token
@@ -14,7 +13,7 @@ import { ApiNoContentResponse, ApiParam, ApiBearerAuth, ApiBadRequestResponse, A
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
-    constructor (private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService) { }
 
     // POST/users
     @Post()
@@ -94,8 +93,9 @@ export class UsersController {
     update(
         @Param('id', ParseIntPipe) id: number,
         @Body() updateUserDto: UpdateUserDto,
+        @Req() req: any, // necesario para comprobar en el service si el usuario puede modificar esta cuenta
     ) {
-        return this.usersService.update(id, updateUserDto);
+        return this.usersService.update(id, updateUserDto, req.user.userId);
     }
 
     // DELETE/users/:id
@@ -116,7 +116,10 @@ export class UsersController {
     @ApiBadRequestResponse({
         description: 'El ID enviado no existe',
     })
-    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        await this.usersService.remove(id);
+    async remove(
+        @Param('id', ParseIntPipe) id: number,
+        @Req() req: any, // necesario para comprobar en el service si el usuario puede eliminar esta cuenta
+    ): Promise<void> {
+        await this.usersService.remove(id, req.user.userId);
     }
 }

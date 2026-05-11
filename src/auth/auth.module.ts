@@ -8,21 +8,22 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [
+  imports: [ // Importamos PrismaModule para que AuthService pueda acceder a PrismaService y consultar/crear usuarios en la bd
     PrismaModule,
-    ConfigModule,
+    ConfigModule, //Permite leer variables de entorno desde el .env
     //RegisterAsync permite leer la configuración del .env de forma segura cuando Nest ya ha cargado ConfigModule
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
+      inject: [ConfigService], // lo inyectamos para poder leer el .env
       useFactory: async (configService: ConfigService) => ({
+        //clave usada para firmar los tokens, si no encuentra jwt secret, utiliza la otra clave por defecto
         secret: configService.get<string>('JWT_SECRET') || 'secreto_super_seguro',
-        signOptions: { expiresIn: '1h' },
+        signOptions: { expiresIn: '1h' }, // tiempo de validez
       }),
     }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtAuthGuard],
-  exports:  [AuthService, JwtStrategy, JwtAuthGuard],
+  exports:  [AuthService, JwtStrategy, JwtAuthGuard], // los exportamos para que otros modulos puedan reutilizarlos
 })
 export class AuthModule {}

@@ -13,7 +13,7 @@ import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiNoContentResponse, Ap
 @UseGuards(JwtAuthGuard)
 @Controller() // Lo dejo vacío porque POST tiene otra ruta distinta
 export class ChannelsController {
-    constructor(private readonly channelsService: ChannelsService) {}
+    constructor(private readonly channelsService: ChannelsService) { }
 
     // POST/servers/:serverId/channels
     @Post('/servers/:serverId/channels')
@@ -29,9 +29,9 @@ export class ChannelsController {
         description: 'Canal creado correctamente',
     })
     create(
-        @Param('serverId', ParseIntPipe) serverId: number,
-        @Body()createChannelDto: CreateChannelDto,
-        @Req() req: any,
+        @Param('serverId', ParseIntPipe) serverId: number, // pipe para asegurar que el id es un numero
+        @Body() createChannelDto: CreateChannelDto, // recoge y valida el body
+        @Req() req: any, // req.user viene del jwt validado por jwtStrategy
     ) {
         return this.channelsService.create(createChannelDto, serverId, req.user.userId);
     }
@@ -58,7 +58,7 @@ export class ChannelsController {
     @ApiOkResponse({
         description: 'Lista de canales del usuario obtenida correctamente',
     })
-    findMyChannels(@Req() req: any) {
+    findMyChannels(@Req() req: any) { // id del usuario autenticado desde request.user que viene del payload del token
         return this.channelsService.findMyChannels(req.user.userId);
     }
 
@@ -79,7 +79,7 @@ export class ChannelsController {
     @ApiBadRequestResponse({
         description: 'El ID enviado no es válido',
     })
-    joinChannel(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
+    joinChannel(@Param('id', ParseIntPipe) id: number, @Req() req: any) { // pipe que asegura que el id sea un numero
         return this.channelsService.joinChannel(id, req.user.userId);
     }
 
@@ -170,9 +170,10 @@ export class ChannelsController {
     })
     update(
         @Param('id', ParseIntPipe) id: number,
-        @Body() UpdateChannelDto: UpdateChannelDto,
+        @Body() updateChannelDto: UpdateChannelDto,
+        @Req() req: any, // necesario para comprobar en el service si el usuario puede modificar este canal
     ) {
-        return this.channelsService.update(id, UpdateChannelDto);
+        return this.channelsService.update(id, updateChannelDto, req.user.userId);
     }
 
     // DELETE/channels/:id
@@ -193,7 +194,10 @@ export class ChannelsController {
     @ApiBadRequestResponse({
         description: 'ID del canal inválido',
     })
-    async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        await this.channelsService.remove(id);
+    async remove(
+        @Param('id', ParseIntPipe) id: number,
+        @Req() req: any, // necesario para comprobar en el service si el usuario puede eliminar este canal
+    ): Promise<void> {
+        await this.channelsService.remove(id, req.user.userId);
     }
 }

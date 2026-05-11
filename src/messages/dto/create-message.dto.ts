@@ -9,5 +9,5 @@ export class CreateMessageDto {
     })
     @IsString({ message: "El contenido del mensaje debe ser una cadena de texto." })
     @IsNotEmpty({ message: "El contenido del mensaje no puede estar vacío." })
-    content!: string;
+    content!: string; // El ! le indica a typescript que el valor existirá
 }
